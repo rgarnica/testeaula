@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">TesteAula</string>
+    <string name="hint_number">Número para operação</string>
+</resources>
