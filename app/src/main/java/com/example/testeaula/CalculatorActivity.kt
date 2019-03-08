@@ -2,6 +2,7 @@ package com.example.testeaula
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_calculator.*
 
 class CalculatorActivity : AppCompatActivity() {
@@ -19,24 +20,12 @@ class CalculatorActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calculator)
-        button_plus.setOnClickListener {
-            number1 = getNumberValueAndClearField()
-            operation = Operation.PLUS
-        }
-        button_multiply.setOnClickListener {
-            number1 = getNumberValueAndClearField()
-            operation = Operation.MULTIPLY
-        }
-        button_minus.setOnClickListener {
-            number1 = getNumberValueAndClearField()
-            operation = Operation.MINUS
-        }
-        button_divide.setOnClickListener {
-            number1 = getNumberValueAndClearField()
-            operation = Operation.DIVIDE
-        }
+        button_plus.setOnClickListener(clickListener(Operation.PLUS))
+        button_multiply.setOnClickListener(clickListener(Operation.MULTIPLY))
+        button_minus.setOnClickListener(clickListener(Operation.MINUS))
+        button_divide.setOnClickListener(clickListener(Operation.DIVIDE))
         button_equal.setOnClickListener {
-            val result = executeMath(getNumberValueAndClearField())
+            val result = executeMath(getNumberOrShowError())
             text_result.setText(result.toString())
         }
 
@@ -53,10 +42,23 @@ class CalculatorActivity : AppCompatActivity() {
         return result
     }
 
-    fun getNumberValueAndClearField(): Float {
-        val number = text_number.text.toString().toFloat()
-        text_number.text.clear()
+    fun getNumberOrShowError(): Float {
+        val numberStr = text_number.text.toString()
+        var number = 0.toFloat()
+        if (numberStr.isEmpty()) {
+            Toast.makeText(this, R.string.error_empty_number, Toast.LENGTH_SHORT).show()
+        } else {
+            number = numberStr.toFloat()
+            text_number.text.clear()
+        }
         return number
+    }
+
+    fun clickListener(operation: Operation): (v:Any)->Unit {
+        return {
+            number1 = getNumberOrShowError()
+            this.operation = operation
+        }
     }
 
 }
